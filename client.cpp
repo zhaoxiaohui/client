@@ -46,7 +46,7 @@ class echo_session
             if (!error)  
             {  
                 //写入完毕，接收服务器回射的消息  
-                boost::asio::async_read(socket_, boost::asio::buffer(buf_, sizeof(buf_)),  
+                boost::asio::async_read(socket_, boost::asio::buffer(buffer_),  
                         boost::bind(&echo_session::handle_read, this,  
                             boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));  
             }  
@@ -58,14 +58,14 @@ class echo_session
             if (!error)  
             {  
                 //读取完毕，在终端显示  
-                cout << id_ << ":receive:" << bytes_transferred << "@@@@@" << buf_ << "\n\n";  
+                cout << id_ << ":receive:" << bytes_transferred << "@@@@@" << buffer_.data() << "\n\n";  
                 //周而复始...  
-                handle_connect(error);  
+                //handle_connect(error);  
             }  
             else  
-                cout << "error:" <<error << endl;  
+                cout << "error:" <<error.message() << endl;  
         }  
         int id_;  
         tcp::socket socket_;
-        char buf_[sizeof(message)];  
+        boost::array<char, 100000> buffer_;  
 };  
